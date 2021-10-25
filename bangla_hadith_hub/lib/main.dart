@@ -4,7 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../screens/home.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      MultiBlocProvider(
+          providers: [BlocProvider(create: (context) => DataManagerCubit())],
+          child: MyApp()),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -12,10 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => DataManagerCubit())],
-        child: HomePage(),
-      ),
+      home: HomePage(),
     );
   }
 }
