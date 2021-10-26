@@ -4,6 +4,7 @@ import 'package:bangla_hadith_hub/screens/chapter.dart';
 import 'package:bangla_hadith_hub/widgets/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -39,23 +40,30 @@ class _HomePageState extends State<HomePage> {
             : BlocBuilder<DataManagerCubit, DataManagerState>(
                 builder: (context, state) {
                   List<Welcome> list = welcomeFromJson(state.fetchedData);
-                  return ListView.builder(
-                    itemBuilder: (ctx, index) {
-                      return list[index].bookKey != ""
-                          ? ListTile(
-                              title: Text(list[index].nameBengali),
-                              subtitle: Text(list[index].bookKey),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (ctx) => Chapter(
-                                            bookKey: list[index].bookKey)));
-                              },
-                            )
-                          : Container();
-                    },
-                    itemCount: list.length,
+                  List<Welcome> newList = [];
+                  for (int index = 0; index < list.length; index++)
+                    if (list[index].bookKey != "") newList.add(list[index]);
+
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    children: [
+                      for (int index = 0; index < newList.length; index++)
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        Chapter(bookKey: list[index].bookKey)));
+                          },
+                          child: Container(
+                            color: Colors.green,
+                            child: Text(newList[index].nameBengali),
+                          ),
+                        )
+                    ],
                   );
                 },
               ),
@@ -63,3 +71,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+/*
+  return
+ */
